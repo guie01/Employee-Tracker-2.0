@@ -91,3 +91,46 @@ viewAllRoles = () => {
       mainmenu();
     });
 }
+
+function addEmployee() {
+    inquirer
+      .prompt([
+        {
+          type: 'input',
+          message: "What is the first name?",
+          name: "firstName",
+        },
+        {
+          type: "input",
+          message: "What is the last name?",
+          name: "lastName",
+        },
+        {
+          type: "input",
+          message: "What is the employee's role ID?",
+          name: "title",
+        },
+        {
+          type: "input",
+          message: "What is the employee's manager ID?",
+          name: "manager",
+        }
+      ]).then(function (response) {
+        console.log(response)
+        insertEmployeeData(response)
+      })
+  }
+  
+  function insertEmployeeData(data) {
+  
+    connection.query("INSERT INTO employee SET ?",
+      {
+        first_name: data.firstName,
+        last_name: data.lastName,
+        role_id: data.title,
+        manager_id: data.manager
+      }, function (error, res) {
+        if (error) throw error;
+      })
+      mainmenu();
+  }
