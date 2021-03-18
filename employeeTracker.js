@@ -60,7 +60,7 @@ mainmenu = () => {
           break;
 
         case "Update Employee Role":
-          updateEmployeeRole();
+          updateRole();
           break;
 
         case "Exit":
@@ -96,6 +96,11 @@ function addEmployee() {
     inquirer
       .prompt([
         {
+            type: 'input',
+            message: "What is the employee ID?",
+            name: "id",
+          },
+        {
           type: 'input',
           message: "What is the first name?",
           name: "firstName",
@@ -125,12 +130,119 @@ function addEmployee() {
   
     connection.query("INSERT INTO employee SET ?",
       {
+        id: data.id,  
         first_name: data.firstName,
         last_name: data.lastName,
         role_id: data.title,
         manager_id: data.manager
       }, function (error, res) {
         if (error) throw error;
+        mainmenu();
       })
+      
+  }
+
+  function addDept() {
+    inquirer
+      .prompt([
+        {
+            type: 'input',
+            message: "What is the department ID?",
+            name: "id",
+          },
+        {
+          type: 'input',
+          message: "What is the department name?",
+          name: "name",
+        },
+      ]).then(function (response) {
+        console.log(response)
+        insertDepartmentData(response)
+      })
+  }
+  
+  function insertDepartmentData(data) {
+  
+    connection.query("INSERT INTO department SET ?",
+      {
+        id: data.id,  
+        dept_name: data.name,
+      }, function (error, res) {
+        if (error) throw error;
+        mainmenu();
+      })
+  }
+
+  function addRole() {
+    inquirer
+      .prompt([
+        {
+            type: 'input',
+            message: "What is the role ID?",
+            name: "id",
+          },
+        {
+          type: 'input',
+          message: "What is the role title?",
+          name: "title",
+        },
+        {
+          type: "input",
+          message: "What is the expected salary?",
+          name: "salary",
+        },
+        {
+          type: "input",
+          message: "What is the associated department ID?",
+          name: "deptarment",
+        },
+      ]).then(function (response) {
+        console.log(response)
+        insertRoleData(response)
+      })
+  }
+  
+  function insertRoleData(data) {
+  
+    connection.query("INSERT INTO roles SET ?",
+      {
+        id: data.id,  
+        role_title: data.title,
+        salary: data.salary,
+        dep_id: data.department,
+      }, function (error, res) {
+        if (error) throw error;
+        mainmenu();
+      })
+      
+  }
+
+  function updateRole() {
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          message: "For which employee would you like to update the role?",
+          name: "empID",
+        },
+        {
+          type: "input",
+          message: "What is the employee's new role?",
+          name: "titleID",
+        }
+      ])
+      .then(function (response) {
+        console.log(response);
+        updateEmployeeRole(response);
+      })
+  }
+  
+  function updateEmployeeRole(data) {
+    connection.query(`UPDATE employee SET role_id = ${data.titleID} WHERE id = ${data.empID}`,
+    function (error, res) {
+      console.log(error, res);
+      if (error) throw error;
       mainmenu();
+    });
+    
   }
